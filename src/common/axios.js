@@ -1,0 +1,39 @@
+/**
+ *author:ZhouDengPan
+ *creatTime:20170727
+ *封装请求接口
+ **/
+import axios from 'axios'
+import qs from 'qs'
+import tools from '../assets/tools'
+const AjaxData = (obj) => {
+  let { url, data = { }, method, load, showMsg = true } = obj
+  if (load) {
+    tools.loading('open')
+  }
+  return new Promise((resolve, reject) => {
+    axios({
+      method: method || `POST`,
+      url: url,
+      data: qs.stringify(data),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then((res) => {
+      resolve(res.data)
+      if (load) {
+        tools.loading('close')
+      }
+    }).catch((res) => {
+      resolve(res)
+      if (showMsg) {
+        console.log(res)
+      }
+    })
+  }
+  )
+}
+
+export default {
+  install: (Vue) => {
+    Vue.prototype.$ajax = AjaxData
+  }
+}

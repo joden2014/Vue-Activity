@@ -1,0 +1,192 @@
+<!-- 商品组件 -->
+<template>
+	<div class="productList">
+		<div class="productCon" v-for="list in IData.Items" v-bind:class="{ flex2: IData.StructID===4 || IData.StructID===2,flex1: IData.StructID===1,flex3: IData.StructID===3 }">
+	        <div class="item" v-for="product in list.ContentObj.ProductItems" :key="product.IID">
+	    		<div class="ProductImg">
+	    			<x-img :src="product.ProductImages.split(',')[0]" :webp-src="`${product.ProductImages.split(',')[0]}`" @on-success="success" @on-error="error" class="ximg-demo" error-class="ximg-error" container="#app"></x-img>
+	    		</div>
+	    		<div>
+		    		<div class="ProductNum" v-if="IData.StructID!==1">
+		    			<span v-if="product.LimitMin>0">起购:{{product.LimitMin}}</span>
+		    			<span v-if="product.LimitMax>0">限购:{{product.LimitMax}}</span>
+		    			<span>库存:{{product.CurrentAmount}}</span>
+		    		</div>
+		    		<div class="ProductTitle">
+		    			<span>{{product.ProductName}}</span>
+		    		</div>
+
+		    		<div class="ProductNumForOne" v-if="IData.StructID===1">
+		    			<span v-if="product.LimitMin>0">起购:{{product.LimitMin}}</span>
+		    			<span v-if="product.LimitMax>0">限购:{{product.LimitMax}}</span>
+		    			<span>库存:{{product.CurrentAmount}}</span>
+		    		</div>
+					<div v-bind:class="{ flex:IData.StructID===1 }">
+			    		<div class="ProductPrice">
+			    			<span>￥<em>{{product.ListPriceStr}}</em><i v-if="product.CouponID!==null" class="coupons" @click="operation(4,{'CouponID': product.CouponID, 'CouponType': product.CouponType})">券</i></span>
+			    		</div>
+			    		<div class="ProductBtn">
+			    			<button @click="operation(5,{'UserProductId': product.UserProductId, 'ProductType': product.ProductType})">马上抢</button>
+			    		</div>
+		    		</div>
+	    		</div>
+	        </div>
+        </div>
+	</div>
+</template>
+
+<script>
+  import { XImg } from 'vux'
+  import jump from '../../assets/jump.js'
+  export default {
+    components: {
+      XImg
+    },
+    data () {
+      return {
+      }
+    },
+    computed: {
+    },
+    methods: {
+      operation: (type, value) => {
+        jump.to(type, value)
+      },
+      success (src, ele) {
+      },
+      error (src, ele, msg) {
+        console.log('error load', msg, src)
+      }
+
+    },
+    mounted () {
+    },
+    props: ['IData']
+  }
+</script>
+
+<style lang="less" scoped>
+.coupons{
+  background:rgba(248,170,51,0.35);
+  border:1px solid #fc6b3e;
+}
+.flex{
+	display:flex;
+	display:box;
+	align-items:center;
+	justify-content:space-between;
+}
+	.productList{
+		display:flex;
+		display:-webkit-flex;
+		display: box;
+		margin: 0.3rem 0;
+		flex-wrap:wrap;
+		width:100%;
+		height:100%;
+		justify-content:space-around;
+
+		.flex2{
+			width:48%;
+			
+			&:nth-child(odd){
+				margin: 0.2rem 0.10rem 0 0.2rem;
+			}
+			&:nth-child(even){
+				margin: 0.2rem 0.2rem 0 0.10rem;
+			}
+		}
+		.flex1{
+			  width:100%;
+			  margin:0 0.14rem;
+			.ProductImg{
+				display:flex;
+				align-items:center;
+			}
+			.ProductNumForOne{
+				background:rgba(255,255,255,1);
+				color:#878787;
+			}
+			.ProductTitle{
+				padding:0;
+			}
+			.ProductPrice{
+				padding:0;
+			}
+			.flex{
+				.ProductBtn{
+					width:5.973rem;
+				}
+			}
+			.item{
+				
+				display:flex;
+				display:-webkit-flex;
+				display: box;
+			}
+		}
+	}
+
+	.item{
+		height:auto;
+		border-radius: 0.25rem;
+		background: #fff;
+		font-size: 0.5rem;
+		width:100%;
+		.ProductImg{
+			text-align: center;
+			padding:0.3rem 0;
+			img{
+				width:3.754rem;
+				display:inline-block;
+			}
+		}
+
+		.ProductTitle{
+			overflow: hidden;
+		    text-overflow: ellipsis;
+		    display: -webkit-box;
+		    -webkit-line-clamp: 2;
+		    -webkit-box-orient: vertical;
+		    height: 30px;
+		    line-height: 15px;
+		    word-break:break-all;
+		    word-wrap:break-word;
+		    margin:0.3rem 0;
+		    padding: 0 0.3rem;
+		}
+		.ProductNum{
+			width:100%;
+			height:1rem;
+			background:rgba(155,183,210,0.83);
+			span{
+				color:#fff;
+				line-height:1rem;
+				padding:0 0.2rem;
+			}
+		}
+		.ProductBtn{
+			text-align:center;
+			padding:0.3rem 0;
+			button{
+				width:80%;
+				height:1.5rem; 
+				background:#cc1b23;
+				outline: none;
+				border:none;
+				border-radius:0.3rem;
+				color: #fff;
+			}
+		}
+		.ProductPrice{
+			padding: 0 0.3rem;
+			span{
+				color:#cc1b23;
+				em{
+					font-size:0.7rem;
+					font-style: normal;
+				}
+			}
+		}
+	}
+</style>
